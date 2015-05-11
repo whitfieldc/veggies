@@ -1,0 +1,20 @@
+{
+  "name": "veggies",
+  "version": "0.0.0",
+  "homepage": "https://github.com/whitfieldc/veggies",
+  "authors": [
+    "Charles <whitfield.cw@gmail.com>"
+  ],
+  "main": "index.erb",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#~0.8.0"
+  }
+}
