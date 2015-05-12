@@ -1,3 +1,4 @@
+        <hello-world></hello-world>
         <div class="debug">
             <header class="container debug">
                 <form id="login" class="fl-r debug">
@@ -25,6 +26,8 @@
                     <li class="debug">
                         Prioritization Visualization
                     </li>
+
+                    <%= erb :"/partials/_add_task", locals: { section: "Icebox" } %>
                 </ul>
 
                 <ul class="lis-n col span-3-t debug">
@@ -35,6 +38,7 @@
                     <li class="debug">
                         UX
                     </li>
+                    <%= erb :"/partials/_add_task", locals: { section: "Development" } %>
                 </ul>
 
                 <ul class="lis-n col span-3-t debug">
@@ -42,6 +46,7 @@
                     <li class="debug">
                         Name
                     </li>
+                    <%= erb :"/partials/_add_task", locals: { section: "Testing" } %>
                 </ul>
 
                 <ul class="lis-n col span-3-t debug">
@@ -52,6 +57,7 @@
                     <li class="debug">
                         Chocolate
                     </li>
+                    <%= erb :"/partials/_add_task", locals: { section: "Deployed" } %>
                 </ul>
             </main>
 
