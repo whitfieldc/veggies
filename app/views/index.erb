@@ -13,46 +13,23 @@
 
             <main role="main" class="contain-xl p-sm row gutters-t gutters-d debug">
                 <ul class="lis-n col span-3-t debug">
-                    icebox
-                    <li class="debug">
-                        Schema
-                    </li>
-                    <li class="debug">
-                        Migrations
-                    </li>
-                    <li class="debug">
-                        SMS API
-                    </li>
-                    <li class="debug">
-                        Prioritization Visualization
-                    </li>
+                    Icebox
+                    <%= erb :"partials/_list_tasks", locals: { stage: "Icebox" } %>
                 </ul>
 
                 <ul class="lis-n col span-3-t debug">
-                    development
-                    <li class="debug">
-                        UI
-                    </li>
-                    <li class="debug">
-                        UX
-                    </li>
+                    Development
+                    <%= erb :"partials/_list_tasks", locals: { stage: "Development" } %>
                 </ul>
 
                 <ul class="lis-n col span-3-t debug">
-                    testing
-                    <li class="debug">
-                        Name
-                    </li>
+                    Testing
+                    <%= erb :"partials/_list_tasks", locals: { stage: "Testing" } %>
                 </ul>
 
                 <ul class="lis-n col span-3-t debug">
-                    deployed
-                    <li class="debug">
-                        Self-doubt
-                    </li>
-                    <li class="debug">
-                        Chocolate
-                    </li>
+                    Deployed
+                    <%= erb :"partials/_list_tasks", locals: { stage: "Deployed" } %>
                 </ul>
                 <%= erb :"/partials/_add_task" %>
             </main>

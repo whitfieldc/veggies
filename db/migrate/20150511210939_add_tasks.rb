@@ -1,6 +1,6 @@
 class AddTasks < ActiveRecord::Migration
   def change
-      create_table :users do |t|
+      create_table :tasks do |t|
       t.string  :title
       t.text    :description
       t.string  :stage
