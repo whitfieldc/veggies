@@ -1,13 +1,6 @@
 class ControllerHelper
   class << self
 
-
-
-
-
-
-
-
     def all_projects
       @all_projects = Project.where(owner_id: current_user)
       output = @all_projects.each.map do |project|
@@ -20,20 +13,52 @@ class ControllerHelper
       output.to_json
     end
 
-    def single_project(target_id)
-      @single_project = Project.where(id: target_id).first
-      if @single_project
-        output =
+    def tasks_by_project(project_id)
+      @task_set = Task.where(project_id: project_id)
+      if @task_set
+        output = @task_set.each.map do |task|
           {
-            "title" => @single_project.title,
-            "owner_id" => @single_project.owner_id,
-            "owner" => @single_project.owner.email
+            "title" => @task.title,
+            "description" => @task.description,
+            "stage" => @task.stage
           }
+        end
         output.to_json
       else
         status 404
       end
     end
+
+    def create_project(args)
+      project_info = JSON.parse(args)
+      @project = Project.new(
+        title: project_info["title"]
+        owner_id: current_user
+        )
+      if @project.save
+        status 200
+        @project
+      else
+        status 400
+      end
+    end
+
+    def create_task(args)
+      task_info = JSON.parse(args)
+      @task = Task.new(
+      title: task_info["title"],
+      description: task_info["description"],
+      stage: task_info["stage"]
+      project_id: task_info["project_id"]
+        )
+      if @task.save
+        @task
+        status 200
+      else
+        status 400
+      end
+    end
+
 
 
 
