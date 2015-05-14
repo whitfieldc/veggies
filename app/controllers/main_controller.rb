@@ -1,7 +1,9 @@
 get '/key' do
 
   key = SecureRandom.hex(10).to_s
-
+  user = User.first
+  user.session_key = key
+  user.save
   "Here's your key: \n#{key}"
 
 end
@@ -33,7 +35,13 @@ end
 
 post '/users/login' do
   @user = User.where(email: params[:email]).first
-  login(@user, params[:password])
+  @key = login(@user, params[:password])
+  if @key
+    status 200
+    response = key.to_json
+  else
+    status 400
+  end
 end
 
 post '/logout' do
@@ -42,7 +50,8 @@ end
 
 
 get '/projects' do
-  ControllerHelper.all_projects
+
+  ControllerHelper.all_projects(user)
   # @projects = Project.where(owner_id: current_user)
 end
 
@@ -50,8 +59,10 @@ post '/projects' do
 #### create new project for user
   # @project = Project.new(title: params[:title], owner_id: current_user)
   proj_args = request.body.string
-  if ControllerHelper.create_project(proj_args)
+  @project = ControllerHelper.create_project(proj_args)
+  if @project
     status 202
+    @project
   else
     status 400
   end

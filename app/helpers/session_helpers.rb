@@ -7,20 +7,19 @@ helpers do
   end
 
   def login(user, password)
-    if user.password == password
-      session[:session_key] = user.get_key
-      true
+    if user.password_hash == password
+      user.get_key
     else
       false
     end
   end
 
-  def logout
-    session[:session_key] = nil
-  end
+  # def logout
+  #   session[:session_key] = nil
+  # end
 
-  def logged_in?
-    !!current_user
-  end
+  # def logged_in?
+  #   !!current_user
+  # end
 
 end

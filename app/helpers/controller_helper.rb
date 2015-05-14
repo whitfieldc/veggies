@@ -1,8 +1,8 @@
 class ControllerHelper
   class << self
 
-    def all_projects
-      @all_projects = Project.where(owner_id: current_user)
+    def all_projects(user)
+      @all_projects = Project.where(owner_id: user.id)
       output = @all_projects.each.map do |project|
         {
           "title" => project.title,
@@ -36,10 +36,9 @@ class ControllerHelper
         owner_id: current_user
         )
       if @project.save
-        status 200
-        @project
+        @project.to_json
       else
-        status 400
+        false
       end
     end
 
