@@ -38,7 +38,7 @@ post '/users/login' do
   @key = login(@user, params[:password])
   if @key
     status 200
-    response = key.to_json
+    key.to_json
   else
     status 400
   end
