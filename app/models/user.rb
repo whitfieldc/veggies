@@ -14,4 +14,8 @@ class User < ActiveRecord::Base
     self.password_hash = @password
   end
 
+  def get_key
+    self.session_key ||= SecureRandom.hex(10).to_s
+  end
+
 end

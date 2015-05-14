@@ -1,6 +1,9 @@
+get '/key' do
 
-get '/' do
-  erb :index
+  key = SecureRandom.hex(10).to_s
+
+  "Here's your key: \n#{key}"
+
 end
 
 # post '/tasks' do
@@ -16,7 +19,19 @@ get '/tasks/new' do
 end
 ######################################################################
 
-post '/login' do
+post '/users' do
+##### IF KEY MATCH
+  new_user_data = JSON.parse(request.body.read)
+  @user = User.new(new_user_data)
+  if @user.save
+    @user.get_key ###### put this in session cookie??
+  else
+    status 400
+    "Bad User Data"
+  end
+end
+
+post '/users/login' do
   @user = User.where(email: params[:email]).first
   login(@user, params[:password])
 end
@@ -24,8 +39,6 @@ end
 post '/logout' do
   logout
 end
-
-
 
 
 get '/projects' do

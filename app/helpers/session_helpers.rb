@@ -1,12 +1,14 @@
 helpers do
 
   def current_user
-    cookies[:user_id]
+    if session[session_key]
+      User.where(session_key: session[:session_key]).first
+    end
   end
 
   def login(user, password)
     if user.password == password
-      cookies[:user_id] = user.id
+      session[:session_key] = user.get_key
       true
     else
       false
@@ -14,7 +16,7 @@ helpers do
   end
 
   def logout
-    cookies[:user_id] = nil
+    session[:session_key] = nil
   end
 
   def logged_in?

@@ -32,7 +32,7 @@ class ControllerHelper
     def create_project(args)
       project_info = JSON.parse(args)
       @project = Project.new(
-        title: project_info["title"]
+        title: project_info["title"],
         owner_id: current_user
         )
       if @project.save
@@ -48,7 +48,7 @@ class ControllerHelper
       @task = Task.new(
       title: task_info["title"],
       description: task_info["description"],
-      stage: task_info["stage"]
+      stage: task_info["stage"],
       project_id: task_info["project_id"]
         )
       if @task.save
