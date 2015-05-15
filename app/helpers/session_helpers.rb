@@ -1,18 +1,30 @@
 helpers do
 
-  def current_user
-    if session[session_key]
-      User.where(session_key: session[:session_key]).first
-    end
+  def access_token
+    request.env['HTTP_KEY']
   end
 
-  def login(user, password)
-    if user.password_hash == password
-      user.get_key
-    else
-      false
-    end
+  def current_user
+    @current_user ||= User.where(session_key: access_token).first
   end
+
+  def authorized?
+    !current_user.nil?
+  end
+
+  def ensure_authorized!
+    return if authorized?
+    content_type :json
+    halt!(401, {error:'unauthorized'}.to_json)
+  end
+
+  # def login(user, password)
+  #   if user.password_hash == password
+  #     user.get_key
+  #   else
+  #     false
+  #   end
+  # end
 
   # def logout
   #   session[:session_key] = nil

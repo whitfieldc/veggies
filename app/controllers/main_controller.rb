@@ -1,3 +1,7 @@
+before do
+  content_type :json
+end
+
 get '/key' do
 
   key = SecureRandom.hex(10).to_s
@@ -23,10 +27,12 @@ end
 
 post '/users' do
 ##### IF KEY MATCH
-  new_user_data = JSON.parse(request.body.read)
-  @user = User.new(new_user_data)
+  @user = User.new(
+    email: params[:email],
+    )
+  @user.password = params[:password]
   if @user.save
-    @user.get_key ###### put this in session cookie??
+    @user.to_json(methods: [:access_token]) ###### put this in session cookie??
   else
     status 400
     "Bad User Data"
@@ -35,12 +41,13 @@ end
 
 post '/users/login' do
   @user = User.where(email: params[:email]).first
-  @key = login(@user, params[:password])
-  if @key
+  binding.pry
+  if @user && @user.password == params[:password]
     status 200
-    key.to_json
+    @user.to_json(methods: [:access_token])
   else
-    status 400
+    status 401
+    {error: "Not Authorized"}.to_json
   end
 end
 
@@ -50,30 +57,44 @@ end
 
 
 get '/projects' do
-
-  ControllerHelper.all_projects(user)
-  # @projects = Project.where(owner_id: current_user)
+  ensure_authorized!
+  current_user.projects.to_json
 end
 
 post '/projects' do
 #### create new project for user
   # @project = Project.new(title: params[:title], owner_id: current_user)
-  proj_args = request.body.string
-  @project = ControllerHelper.create_project(proj_args)
-  if @project
+  # proj_args = request.body.string
+  # @project = ControllerHelper.create_project(proj_args)
+  ensure_authorized!
+  @project = Project.new(
+      title: params[:title],
+      owner_id: current_user.id
+      )
+  if @project.save
     status 202
-    @project
+    @project.to_json
   else
     status 400
+    {error: "Bad Project Info"}.to_json
   end
 end
 
-get 'projects/:id' do
+get '/projects/:id' do
 #### present single project
 # @project = Project.where(id: params[:id]).first
 # p request.cookies
-  ControllerHelper.single_project(params[:id])
-
+  # ControllerHelper.single_project(params[:id])
+  ensure_authorized!
+  current_project = Project.find(params[:id])
+  if current_project.owner_id == current_user.id
+    @task_set = Task.where(project_id: params[:id])
+    status 200
+    @task_set.to_json
+  else
+    content_type :json
+    halt!(401, {error:'unauthorized'}.to_json)
+  end
 end
 
 post '/tasks' do
