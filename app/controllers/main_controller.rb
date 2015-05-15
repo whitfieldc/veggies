@@ -41,7 +41,6 @@ end
 
 post '/users/login' do
   @user = User.where(email: params[:email]).first
-  binding.pry
   if @user && @user.password == params[:password]
     status 200
     @user.to_json(methods: [:access_token])
@@ -62,10 +61,6 @@ get '/projects' do
 end
 
 post '/projects' do
-#### create new project for user
-  # @project = Project.new(title: params[:title], owner_id: current_user)
-  # proj_args = request.body.string
-  # @project = ControllerHelper.create_project(proj_args)
   ensure_authorized!
   @project = Project.new(
       title: params[:title],
@@ -80,32 +75,63 @@ post '/projects' do
   end
 end
 
+#
+
 get '/projects/:id' do
-#### present single project
-# @project = Project.where(id: params[:id]).first
-# p request.cookies
-  # ControllerHelper.single_project(params[:id])
   ensure_authorized!
-  current_project = Project.find(params[:id])
-  if current_project.owner_id == current_user.id
-    @task_set = Task.where(project_id: params[:id])
-    status 200
-    @task_set.to_json
-  else
-    content_type :json
-    halt!(401, {error:'unauthorized'}.to_json)
+  if params[:id].length < 4
+    current_project = Project.find(params[:id])
+    if current_project.owner_id == current_user.id
+      @task_set = Task.where(project_id: params[:id])
+      status 200
+      @task_set.to_json
+    else
+      content_type :json
+      halt!(401, {error:'unauthorized'}.to_json)
+    end
   end
 end
 
-post '/tasks' do
-  task_args = request.body.string
-
-  if ControllerHelper.create_task(task_args)
-    status 202
+post '/projects/:id/tasks' do
+  ensure_authorized!
+  @task = Task.new(
+    title: params[:title],
+    stage: params[:stage],
+    description: params[:description],
+    project_id: params[:id]
+    )
+  if @task.save
+    status 200
+    @task.to_json
   else
     status 400
+    {error: "Bad Task Info"}.to_json
   end
 end
+
+patch '/tasks/:id' do
+  ensure_authorized!
+  @task = Task.where(id: params[:id]).first
+  @task.stage = params[:stageName]
+  # @task.description ||= params[:description]
+  if @task.save
+    status 200
+  else
+    status 400
+    {error: "Couldn't Update Task"}.to_json
+  end
+end
+
+
+# post '/tasks' do
+#   task_args = request.body.string
+
+#   if ControllerHelper.create_task(task_args)
+#     status 202
+#   else
+#     status 400
+#   end
+# end
 
 
 
