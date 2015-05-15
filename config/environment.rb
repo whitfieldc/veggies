@@ -16,7 +16,9 @@ require 'active_record'
 require 'logger'
 
 require 'sinatra'
+require 'sinatra/cookies'
 require "sinatra/reloader" if development?
+require 'pry-debugger' if development? || test?
 
 require 'erb'
 
