@@ -122,6 +122,19 @@ patch '/tasks/:id' do
   end
 end
 
+delete '/tasks/:id' do
+  # binding.pry
+  ensure_authorized!
+  @task = Task.where(id: params[:id]).first
+  if @task
+    @task.destroy
+    status 200
+  else
+    status 404
+    {error: "Couldn't Find Task"}.to_json
+  end
+end
+
 
 # post '/tasks' do
 #   task_args = request.body.string
